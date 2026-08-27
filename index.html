@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ясна · Рифма · Полка 0</title>
+<style>
+  :root{
+    --bg:#0E1116; --elev:#171B22; --fg:#EEF1F6; --muted:#8B93A3;
+    --line:rgba(238,241,246,.10); --acc:#3D96F0; --gold:#D4A84B; --bad:#C45A45;
+    --track:#2A2F38;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#05070a;color:var(--fg);font-family:Inter,system-ui,sans-serif}
+  body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 48px}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);font-weight:600}
+  h1{font-size:22px;font-weight:600;letter-spacing:-.03em;margin:8px 0 6px}
+  .sub{font-size:13px;color:var(--muted);line-height:1.45;max-width:720px}
+  .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;justify-content:center}
+  .chip{height:28px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font-size:12px;cursor:pointer}
+  .chip.on{border-color:var(--acc);color:var(--fg)}
+  .stage{margin-top:18px;display:flex;flex-wrap:wrap;gap:28px;justify-content:center;align-items:flex-start}
+  .phone{
+    width:390px;height:760px;background:var(--bg);border:1px solid var(--line);
+    border-radius:28px;overflow:hidden;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.45);
+    display:flex;flex-direction:column;
+  }
+  .phone header{
+    height:52px;display:flex;align-items:center;gap:8px;padding:0 12px;
+    border-bottom:1px solid var(--line);flex-shrink:0;
+  }
+  .back,.ghost{background:none;border:0;color:var(--muted);font-size:13px;cursor:pointer;min-width:44px;min-height:44px}
+  .hdr{flex:1;min-width:0}
+  .hdr b{display:block;font-size:15px;font-weight:600}
+  .hdr span{font-size:11px;color:var(--muted)}
+  .dots{display:flex;gap:5px}
+  .dots i{width:6px;height:6px;border-radius:50%;background:var(--track);display:block}
+  .dots i.on{background:var(--acc)}
+  main{flex:1;overflow:auto;padding:16px 16px 88px}
+  .tabs{
+    position:absolute;left:0;right:0;bottom:0;height:64px;
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line);background:rgba(14,17,22,.96);
+  }
+  .tabs button{background:none;border:0;color:var(--muted);font-size:11px;cursor:pointer}
+  .tabs button.on{color:var(--acc)}
+  .star{width:210px;height:210px;margin:8px auto 12px;display:block}
+  .title{font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.3}
+  .body{font-size:13px;color:var(--muted);line-height:1.45;margin-top:6px}
+  .card{background:var(--elev);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+  button.choice{
+    display:block;width:100%;text-align:left;background:var(--elev);border:1px solid var(--line);
+    border-radius:16px;padding:14px 16px;color:var(--fg);cursor:pointer;margin-top:8px;min-height:48px;
+    font-size:15px;
+  }
+  button.choice small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  button.choice.ok{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+  button.choice.bad{border-color:var(--bad)}
+  .btn{
+    width:100%;height:48px;border:0;border-radius:12px;background:var(--acc);color:#fff;
+    font-size:15px;font-weight:600;cursor:pointer;margin-top:16px;
+  }
+  .btn[disabled]{opacity:.35}
+  .link{display:block;width:100%;height:44px;border:0;background:none;color:var(--muted);font-size:14px;cursor:pointer;margin-top:4px}
+  .tri{display:grid;grid-template-columns:1fr 18px 1fr 18px 1fr;gap:6px;align-items:stretch;margin-top:14px}
+  .cell{background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:10px;min-height:84px}
+  .cell.mid{border-style:dashed;border-color:var(--gold);display:flex;align-items:center;justify-content:center;text-align:center}
+  .cell .n{font-size:11px;color:var(--acc);letter-spacing:.12em;text-transform:uppercase}
+  .cell .t{font-size:15px;font-weight:600;margin-top:4px}
+  .cell .s{font-size:12px;color:var(--muted);margin-top:2px}
+  .arr{color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .hint{font-size:11px;color:var(--muted);margin-top:10px}
+  .err{font-size:13px;color:var(--bad);margin-top:8px}
+  .okline{font-size:13px;color:var(--gold);margin-top:8px}
+  .bridge{display:flex;flex-direction:column;gap:0;margin-top:8px}
+  .bridge span{display:block;padding:8px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .bridge span em{color:var(--gold);font-style:normal}
+  .note{max-width:320px;font-size:12px;color:var(--muted);line-height:1.4;margin-top:10px}
+  .board{width:100%;max-width:1680px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px;margin-top:22px}
+  .shot{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .shot .cap{font-size:12px;color:var(--muted);text-align:center}
+  .shot .phone{width:300px;height:620px;border-radius:24px;transform-origin:top center}
+  .shot .phone header{height:44px}
+  .shot .phone main{padding:12px 12px 72px}
+  .shot .star{width:150px;height:150px;margin:4px auto 8px}
+  .shot .tabs{height:56px}
+  .shot .title{font-size:15px}
+  .mode{margin-top:12px}
+  @media (max-width:860px){ .phone{height:720px} }
+</style>
+</head>
+<body>
+  <p class="kicker">Прототип · не сборка</p>
+  <h1>Рифма · полка 0</h1>
+  <p class="sub">Десять экранов режима Рифма. Кнопка «Все макеты» — сетка. «Листать по одному» — партия.</p>
+  <div class="row mode">
+    <button class="chip on" id="mBoard" type="button">Все макеты</button>
+    <button class="chip" id="mOne" type="button">Листать по одному</button>
+  </div>
+  <div class="row" id="nav" hidden></div>
+  <div class="board" id="board"></div>
+  <div class="stage" id="stage" hidden>
+    <div class="phone" id="phone"></div>
+    <div class="note" id="legend"></div>
+  </div>
+<script src="app.js"></script>
+</body>
+</html>
